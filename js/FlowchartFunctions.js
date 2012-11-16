@@ -3,7 +3,7 @@
 //	Desarrolladores:
 //									Kevin Martinez Montero
 //									Cristina Valverde Mora
-//	© 2012
+//	Â© 2012
 //
 ///////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -74,6 +74,15 @@ function addList() {
   textarea.value = text;
 };
 
+function replace(search,replace) {
+  var search_text = search;
+	var replace_text = replace;
+	var textarea = document.getElementById('textarea');
+	var text = textarea.value;
+	var textFinal = text.replace(search_text,replace_text);
+	textarea.value = textFinal;
+};
+
 function replaceOne() {
   var search_text = document.getElementById('search-text');
 	var replace_text = document.getElementById('replace-text');
@@ -104,6 +113,7 @@ function newfile() {
 
 function openfile() {
   //air.trace("Ejecutando openfile..");
+	var textarea = document.getElementById('textarea');
   var file = air.File.documentsDirectory;
 	var ddlBox = document.getElementById('ddlRecent');
   var filters = new Array();
@@ -119,18 +129,13 @@ function openfile() {
 		fileStream.close();
 		
 		//New Recent File on the Open Recent options, 0 text, 1 value
-		var newFile = document.createElement("OPTION");
+		var newFile = document.createElement("option");
 		// Assign text and value to Option object
-		newFile.text = file.text;
+		newFile.text = file;
 		newFile.value = file;
-		var textarea = document.getElementById('textarea');
 		textarea.value += newFile.text + newFile.value;
 		// Add an Option object to Drop Down/List Box
     document.getElementById("ddlRecentFiles").options.add(newFile);
-		//var option = new Option(file, file);
-		//ddlBox.options[ddlBox.length] = option;	
-		// Preselect option 0
-		//ddlBox.selectedIndex = 0;
   });
 };
 
@@ -366,33 +371,731 @@ function drawFinish() {
 }
 
 function drawStart() {
-	var content = "<start><id>s01</id><label>Start</label><color>pink</color>";
+	var content = "<start><id>s"+countId+"</id><label>Start</label><color>pink</color>";
 	content += "<x>200</x><y>5</y><width>140</width><height>60</height></start>";
   document.getElementById("textarea").value += content;
+  countId++;
 }
 
 function drawBlock() {
-	var content = "<block><id>b01</id><label>Block</label><color>steelblue</color>";
+	var content = "<block><id>b"+countId+"</id><label>Block</label><color>steelblue</color>";
 	content += "<x>10</x><y>5</y><width>140</width><height>60</height></block>";
 	document.getElementById("textarea").value += content;
+	countId++;
 }
 
 function drawDecision() {
-	var content = "<decision><id>d01</id><label>Lamp plugged in?</label><color>yellow</color>";
+	var content = "<decision><id>d"+countId+"</id><label>Lamp plugged in?</label><color>yellow</color>";
 	content += "<x>230</x><y>110</y><width>70</width><height>70</height></decision>";
 	document.getElementById("textarea").value += content;
+	countId++;
 }
 
 function drawEnd() {
-	var content = "<end><id>e01</id><label>End</label><color>lightgreen</color>";
+	var content = "<end><id>e"+countId+"</id><label>End</label><color>lightgreen</color>";
 	content += "<x>400</x><y>110</y><width>140</width><height>60</height></end>";
 	document.getElementById("textarea").value += content;
+	countId++;
+}
+
+function drawLink(source,destiny) {
+	var content = "<link><id>l"+countId+"</id><label>Yes</label><source>"+source+"</source><destiny>"+destiny+"</destiny>";
+	content += "<color>red</color></link>";
+	document.getElementById("textarea").value += content;
+	countId++;
 }
 
 function drawLink() {
-	var content = "<link><source>d01</source><destiny>e01</destiny><label>Yes</label>";
+	var content = "<link><id>l"+countId+"</id><label>Yes</label><source>source</source><destiny></destiny>";
 	content += "<color>red</color></link>";
 	document.getElementById("textarea").value += content;
+	countId++;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Edit Node
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function edit(editId,editLabel,editColor,editX,editY,eleini,elefin){
+	var id= document.getElementById(editId).value;
+	var label= document.getElementById(editLabel).value;
+	var color= document.getElementById(editColor).value;
+	var x= document.getElementById(editX).value;
+	var y= document.getElementById(editY).value;
+	var text= document.getElementById("textarea").value;
+	var elementini= eleini;
+	var elementfin= elefin;
+	var width="";
+	var height="";
+	if(id != ""){ 
+		var search="";
+		var bl="";
+		var cursor=0;
+		var temp="";
+		alert(elementini);
+		while (temp != id){
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+elementini.length+4);
+		if(bl == elementini+"<id>")
+		{cursor=i+elementini.length+4;
+		i=text.length;}}
+		temp="";
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{
+		temp+=bl;}}
+		}
+		search+=elementini+"<id>"+temp;
+		alert(temp+id);
+
+		/////////////////////////////////////////////label
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+12);
+		if(bl == "</id><label>")
+		{cursor=i+12;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////label
+
+		/////////////////////////////////////////////color
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+15);
+		if(bl == "</label><color>")
+		{cursor=i+15;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////color
+
+		/////////////////////////////////////////////x
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+11);
+		if(bl == "</color><x>")
+		{cursor=i+11;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////x
+		/////////////////////////////////////////////y
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+7);
+		if(bl == "</x><y>")
+		{cursor=i+7;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////y
+		/////////////////////////////////////////////width
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+11);
+		if(bl == "</y><width>")
+		{cursor=i+11;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;
+		width+=bl;}}
+
+		////////////////////////////////width
+		/////////////////////////////////////////////height
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+16);
+		if(bl == "</width><height>")
+		{cursor=i+16;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;
+		height+=bl;}}
+
+		////////////////////////////////height
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+9+elementfin.length);
+		if(bl == "</height>"+elementfin)
+		{
+			search+=bl;
+			i=text.length;
+		}}
+	
+	}
+
+	replace(search,elementini+"<id>"+id+"</id><label>"+label+"</label><color>"+color+"</color><x>"+x+"</x><y>"+y+"</y><width>"+width+"</width><height>"+height+"</height>"+elementfin);
+	document.getElementById(editLabel).value="";
+	document.getElementById(editColor).value="";
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Delete Node
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function deletee(editId,eleini,elefin){
+	var id= document.getElementById(editId).value;
+	var text= document.getElementById("textarea").value;
+	var elementini= eleini;
+	var elementfin= elefin;
+	var width="";
+	var height="";
+	if(id != ""){ 
+		var search="";
+		var bl="";
+		var cursor=0;
+		var temp="";
+		alert(elementini);
+		while (temp != id){
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+elementini.length+4);
+		if(bl == elementini+"<id>")
+		{cursor=i+elementini.length+4;
+		i=text.length;}}
+		temp="";
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{
+		temp+=bl;}}
+		}
+		search+=elementini+"<id>"+temp;
+
+		/////////////////////////////////////////////label
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+12);
+		if(bl == "</id><label>")
+		{cursor=i+12;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////label
+
+		/////////////////////////////////////////////color
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+15);
+		if(bl == "</label><color>")
+		{cursor=i+15;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////color
+
+		/////////////////////////////////////////////x
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+11);
+		if(bl == "</color><x>")
+		{cursor=i+11;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////x
+		/////////////////////////////////////////////y
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+7);
+		if(bl == "</x><y>")
+		{cursor=i+7;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////y
+		/////////////////////////////////////////////width
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+11);
+		if(bl == "</y><width>")
+		{cursor=i+11;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;
+		width+=bl;}}
+
+		////////////////////////////////width
+		/////////////////////////////////////////////height
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+16);
+		if(bl == "</width><height>")
+		{cursor=i+16;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;
+		height+=bl;}}
+
+		////////////////////////////////height
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+9+elementfin.length);
+		if(bl == "</height>"+elementfin)
+		{search+=bl;
+		i=text.length;}}
+	}
+
+	replace(search,"");
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Delete Link
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function deleteeLink(editId,eleini,elefin){
+	var id= document.getElementById(editId).value;
+	var text= document.getElementById("textarea").value;
+	var elementini= eleini;
+	var elementfin= elefin;
+	var width="";
+	var height="";
+	if(id != ""){ 
+		var search="";
+		var bl="";
+		var cursor=0;
+		var temp="";
+		alert(elementini);
+		while (temp != id){
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+elementini.length+4);
+		if(bl == elementini+"<id>")
+		{cursor=i+elementini.length+4;
+		i=text.length;}}
+		temp="";
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{
+		temp+=bl;}}
+		}
+		search+=elementini+"<id>"+temp;
+
+		/////////////////////////////////////////////label
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+12);
+		if(bl == "</id><label>")
+		{cursor=i+12;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////label
+
+		/////////////////////////////////////////////color
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+16);
+		if(bl == "</label><source>")
+		{cursor=i+16;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////color
+
+		/////////////////////////////////////////////x
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+18);
+		if(bl == "</source><destiny>")
+		{cursor=i+18;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////x
+		/////////////////////////////////////////////y
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+17);
+		if(bl == "</destiny><color>")
+		{cursor=i+17;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////y
+		/////////////////////////////////////////////width
+		////////////////////////////////height
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+8+elementfin.length);
+		if(bl == "</color>"+elementfin)
+		{search+=bl;
+		i=text.length;}}
+		
+	}
+
+	replace(search,"");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Edit Link
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function editLink(editId,editLabel,editSource,editDestiny,editColor,eleini,elefin){
+	var id= document.getElementById(editId).value;
+	var text= document.getElementById("textarea").value;
+	var label= document.getElementById(editLabel).value;
+	var color= document.getElementById(editColor).value;
+	var source= document.getElementById(editSource).value;
+	var destiny= document.getElementById(editDestiny).value;
+	var text= document.getElementById("textarea").value;
+	var elementini= eleini;
+	var elementfin= elefin;
+	var width="";
+	var height="";
+	if(id != ""){ 
+		var search="";
+		var bl="";
+		var cursor=0;
+		var temp="";
+		alert(elementini);
+		while (temp != id){
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+elementini.length+4);
+		if(bl == elementini+"<id>")
+		{cursor=i+elementini.length+4;
+		i=text.length;}}
+		temp="";
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{
+		temp+=bl;}}
+		}
+		search+=elementini+"<id>"+temp;
+		alert(temp+id);
+
+		/////////////////////////////////////////////label
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+12);
+		if(bl == "</id><label>")
+		{cursor=i+12;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////label
+
+		/////////////////////////////////////////////color
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+16);
+		if(bl == "</label><source>")
+		{cursor=i+16;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////color
+
+		/////////////////////////////////////////////x
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+18);
+		if(bl == "</source><destiny>")
+		{cursor=i+18;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////x
+		/////////////////////////////////////////////y
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+17);
+		if(bl == "</destiny><color>")
+		{cursor=i+17;
+		i=text.length;}}
+		search+=bl;
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+1);
+		if(bl == "<")
+		{cursor= i-1;
+		i=text.length;}
+		else{search+=bl;}}
+
+		////////////////////////////////y
+		/////////////////////////////////////////////width
+		////////////////////////////////height
+
+		for(var i=cursor;i<text.length;i++){
+		bl=text.substring(i,i+8+elementfin.length);
+		if(bl == "</color>"+elementfin)
+		{search+=bl;
+		i=text.length;}}
+	}
+
+	replace(search,eleini+"<id>l"+id+"</id><label>"+label+"</label><source>"+source+"</source><destiny>"+destiny+"</destiny><color>"+color+"</color>"+elefin);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Add
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function add(addLabel,addColor,addX,addY,type){
+
+	var label = document.getElementById(addLabel).value;
+	var color = document.getElementById(addColor).value;
+	var x = document.getElementById(addX).value;
+	var y = document.getElementById(addY).value;
+	var text = document.getElementById("textarea").value;
+
+	if( type=="block"){
+		var content ="<"+type+"><id>b"+countId+"</id><label>"+label+"</label><color>"+color+"</color><x>"+x+"</x><y>"+y+"</y><width>140</width><height>60</height></"+type+">";
+		countId++;
+	}
+
+	if(type=="decision"){
+		var content ="<"+type+"><id>d"+countId+"</id><label>"+label+"</label><color>"+color+"</color><x>"+x+"</x><y>"+y+"</y><width>70</width><height>70</height></"+type+">";
+		countId++;
+	}
+
+	if(type=="end"){
+		var content ="<"+type+"><id>e"+countId+"</id><label>"+label+"</label><color>"+color+"</color><x>"+x+"</x><y>"+y+"</y><width>140</width><height>60</height></"+type+">";
+		countId++;
+	}
+
+	if(type=="start"){
+		var content ="<"+type+"><id>s"+countId+"</id><label>"+label+"</label><color>"+color+"</color><x>"+x+"</x><y>"+y+"</y><width>140</width><height>60</height></"+type+">";
+		countId++;
+	}
+
+	replace("</flowchart>",content+"</flowchart>");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Add Link
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function addLink(addLabel,addSource,addDestiny,addColor){
+	var label= document.getElementById(addLabel).value;
+	var color= document.getElementById(addColor).value;
+	var source= document.getElementById(addSource).value;
+	var destiny= document.getElementById(addDestiny).value;
+	var text= document.getElementById("textarea").value;
+	var content = "<link><id>l"+countId+"</id><label>"+label+"</label><source>"+source+"</source><destiny>"+destiny+"</destiny><color>"+color+"</color></link>";
+	countId++;
+	replace("</flowchart>",content+"</flowchart>");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Edit Select
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function editSelect(editId,editLabel,editColor,editX,editY){
+	var type=document.getElementById(editId).value.substring(0,1);
+	if(type=="b"){
+	edit(editId,editLabel,editColor,editX,editY,"<block>","</block>");}
+	if(type=="d"){
+	edit(editId,editLabel,editColor,editX,editY,"<decision>","</decision>");}
+	if(type=="e"){
+	edit(editId,editLabel,editColor,editX,editY,"<end>","</end>");}
+	if(type=="s"){
+	edit(editId,editLabel,editColor,editX,editY,"<start>","</start>");}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Add Select
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function addSelect(addLabel,addColor,addX,addY){
+	var block=document.getElementById("idblock").selected;
+	var decision=document.getElementById("iddecision").selected;
+	var end=document.getElementById("idend").selected;
+	var start=document.getElementById("idstart").selected;
+
+	if(block==true){
+		add(addLabel,addColor,addX,addY,"block");
+	}
+	if(decision==true){
+		add(addLabel,addColor,addX,addY,"decision");
+	}
+	if(end==true){
+		add(addLabel,addColor,addX,addY,"end");
+	}
+	if(start==true){
+		add(addLabel,addColor,addX,addY,"start");
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+// Delete Select
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function deleteSelect(deleteeId){
+	var type=document.getElementById(deleteeId).value.substring(0,1);
+	if(type=="b"){
+		deletee(deleteeId,"<block>","</block>");
+	}
+	if(type=="d"){
+		deletee(deleteeId,"<decision>","</decision>");
+	}
+	if(type=="e"){
+		deletee(deleteeId,"<end>","</end>");
+	}
+	if(type=="s"){
+		deletee(deleteeId,"<start>","</start>");
+	}
+	if(type=="l"){
+		deleteeLink(deleteeId,"<link>","</link>");
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -404,3 +1107,4 @@ function drawLink() {
 var timer = setInterval("update();", 1000);
 var currentFile;
 var recentFiles = new Array();
+var countId = 1;
