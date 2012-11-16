@@ -4,253 +4,406 @@ Editor de Diagramas de Flujo
 ----------
 </center>
 <center>
-### DocumentaciÛn de AplicaciÛn I Etapa
+### Documentaci√≥n de Aplicaci√≥n II Etapa
 </center>
 
 <center>
-### TecnolÛgico de Costa Rica</center>
+### Tecnol√≥gico de Costa Rica</center>
 <center>
-### Escuela de IngenierÌa en ComputaciÛn</center>
+### Escuela de Ingenier√≠a en Computaci√≥n</center>
 <center>
-### Curso: IntroducciÛn al DiseÒo de Interfaces Gr·ficas de Usuario</center>
+### Curso: Introducci√≥n al Dise√±o de Interfaces Gr√°ficas de Usuario</center>
 <center>
 ### Profesor: Armando Arce Orozco</center>
 
 <center>
 ### Cristina Valverde Mora - 200844549</center>
 <center>
-### Kevin MartÌnez Montero - 201029891</center>
+### Kevin Mart√≠nez Montero - 201029891</center>
 <center>
 ### II Semestre 2012</center>
 
 ----------
 
-##IntroducciÛn
+##Introducci√≥n
 
-La presente documentaciÛn se refiere a la primera etapa del proyecto, la cual incluye la funcionalidad b·sica del editor a desarrollar y a su vez una investigaciÛn preliminar de las librerÌas en javascript para poder implementar el editor correctamente.
+La presente documentaci√≥n se refiere a la segunda etapa del proyecto, la cual incluye la funcionalidad completa del editor de diagramas de flujo asignado .
  
-La implementaciÛn del editor se realizar· de forma est·tica para esta primera etapa del proyecto, por lo que sÛlo se mostrar· la funcionalidad principal del editor sin incorporar a˙n interacciÛn o caracterÌsticas avanzadas a su comportamiento. La funcionalidad principal del editor consiste en la carga y despliegue de diagramas, desde archivos en disco.
+La implementaci√≥n del editor se hizo de forma din√°mica para esta segunda etapa del proyecto, por lo que se muestra  las funcionalidades principales del editor, incorporando interacciones. Las funcionalidades principales del editor consisten en la carga, despliegue, edici√≥n y guardado de diagramas de flujo en disco as√≠ como la creaci√≥n de diagramas flujo desde la misma aplicaci√≥n.
  
-Para implementar el editor y visualizador de contenido asignado, se debe hacer uso de Mozilla XUL como ambiente gr·fico y herramienta de desarrollo. Adem·s se utilizar· el lenguaje CoffeeScript junto con D3.js, de forma que se describir·n las decisiones de implementaciÛn necesarias, las estructuras de datos a utilizar y se har· un an·lisis de las caracterÌsticas del editor utilizado.
+Para la implementaci√≥n del editor y visualizador de diagramas de flujo, se  hace uso de un h√≠brido entre Adobe Air y Bootstrap, como ambiente gr√°fico y herramienta de desarrollo. Adem√°s se utiliza la librer√≠a Jointjs para dibujar los distintos componentes de los diagramas de flujo, tambi√©n  se describen las decisiones de implementaci√≥n tomadas, las estructuras de datos utilizadas y se hace un an√°lisis de las caracter√≠sticas del editor utilizado.
  
-Se realizar·n las pruebas necesarias al editor, las cuales se mostrar·n en este documento, utilizando un conjunto de datos de prueba especÌficos. Para las siguientes etapas del proyecto se manejar· funciones m·s complejas del editor, de modo que cada diagrama pueda cargarse, editarse y guardarse correctamente a travÈs de la aplicaciÛn. 
+Para probar la funcionalidad alcanzada en este proyecto se muestran las pruebas realizadas  al editor para verificar que las funcionalidades funcionen bien,  esto se hizo utilizando un conjunto de datos de prueba espec√≠ficos. 
 
-Se explicar· a profundidad el editor a desarrollar, el cual es de diagramas de flujo,  junto con las posibles interacciones y caracterÌsticas avanzadas que se incorporar·n a la aplicaciÛn en las prÛximas etapas del proyecto.
+Se explica a profundidad el editor desarrollado, el cual es de diagramas de flujo,  junto con las interacciones y caracter√≠sticas avanzadas que se incorporaron a la aplicaci√≥n en esta etapa del proyecto.
  
-Finalmente, se presentar·n las conclusiones de la primera etapa del proyecto las cuales estar·n basadas en las limitaciones observadas y posibles mejoras (lista TO DO) de la aplicaciÛn.
+Finalmente, se presentar√°n las conclusiones de la segunda etapa del proyecto las cuales estar√°n basadas en las limitaciones observadas y posibles mejoras (lista TO DO) de la aplicaci√≥n.
 
 ----------
 
-## DescripciÛn del contenido a desplegar
+## Descripci√≥n del contenido a desplegar
 
-Para este proyecto el contenido a desplegar son los diagramas de flujo, los cuales representan algoritmos o procesos, donde cada sÌmbolo utilizado tiene un ˙nico significado, pero puede ser representado por diversas figuras. A continuaciÛn se muestra una tabla con los sÌmbolos y las figuras que los representan:
+Para este proyecto el contenido a desplegar son los diagramas de flujo, los cuales representan algoritmos o procesos, donde cada s√≠mbolo utilizado tiene un √∫nico significado, pero puede ser representado por diversas figuras. A continuaci√≥n se muestra una tabla con los s√≠mbolos y las figuras que los representan:
 
 --------------------------------------------------
-SÌmbolo	-> Figura
+S√≠mbolo	-> Figura
 --------------------------------------------------
-Inicio	-> Rect·ngulo redondeado
+Inicio	-> Rect√°ngulo redondeado
 --------------------------------------------------
-Fin	-> Rect·ngulo redondeado
+Fin	-> Rect√°ngulo redondeado
 --------------------------------------------------
 Flujo de control	-> Flechas
 --------------------------------------------------
-Pasos de proceso genÈricos	-> Rect·ngulo
+Pasos de proceso gen√©ricos	-> Rect√°ngulo
 --------------------------------------------------
-Estilo alterno de proceso	-> Rect·ngulo con doble borde
---------------------------------------------------
-Entrada/Salida	-> Romboide
---------------------------------------------------
-Paso de decisiÛn 	-> Rombo
+Paso de decisi√≥n 	-> Rombo
 --------------------------------------------------
 
 ----------
 
-##DefiniciÛn de estructuras de datos (formato) utilizadas
+##Definici√≥n de estructuras de datos (formato) utilizadas
 
-Para el despliegue de los gr·ficos se creÛ en el archivo main.xul  una especificaciÛn de gr·ficos  vectoriales redimensionables (SVG), en la cual se dibujan los gr·ficos generados con la biblioteca joint.all.min.js, para implementarla se agrega el siguiente namespace  al window principal
+Funciones de inicializacion
 
-<pre><code>
-xmlns:svg="http://www.w3.org/2000/svg"
-</code></pre>
+function getPaper(): esta funci√≥n lo que hace es crear una instancia Joint.paper en el panel de visualizaci√≥n , lugar en el que se desplegar√°n los elementos del diagrama que se esta construyendo.
 
-Esto solo define que se van a utilizar elementos del tipo svg. La siguiente etiqueta es utilizada para crear un elemento de ese tipo donde se van a dibujar los diagramas:
+Funciones de menu y manejo de archivos
 
-<svg:svg version="1.1" baseProfile="full" width="550" height="550" id="ide">
-      
-    </svg:svg>
+function getCaret(el):
+function heading():
+function addList()
 
-El archivo main.coffee contiene cÛdigo en coffeescript de la clase implementada para dibujar de nombre Diagram la funciÛn draw es invocada cuando se abre un archivo cualquiera y dibuja dos cÌrculos a los que si se  les da click se invoca al evento el cual despliega una alerta. A continuaciÛn se  detalla el cÛdigo de la clase Diagram:
+function replaceOne(): reemplaza la primera aparici√≥n que se encuentre en el textarea  seg√∫n los par√°metros dados en el modal de replace.
 
-	draw: ->
-		w = screen.width/4
-		h = screen.height/4
-		@paper = Raphael("container", w, h)
-		nodes = @paper.set()
-		circle1 = @paper.circle(w/8, h/3, w/16)
-				.attr({fill: "#f33"})
-				.click(@evento)
-		circle2 = @paper.circle(w - w/8, h/3, w/16)
-				.attr({fill: "#acb"})
-				.click(@evento)
-			
-	line: ->
-		alert "Hizo click sobre el circulo 1"
-		band = @paper.path("M 0 0").attr({"stroke-width": 5})
-		band.node.style.pointerEvents = "none"
-		dimensions = this.getBBox()
-		x = dimensions.x + dimensions.width/2
-		y = dimensions.y + dimensions.height/2
-		if (!window.onmousemove) then window.onmousemove = ((e) -> band.attr({path: "M " + x + " " + y + "L " + e.x + " " + e.y}))
-		else window.onmousemove = null
-		
-	mensaje: (dato) ->
-		if dato is "rojo" then alert "Hizo click sobre el circulo rojo"
-		else if dato is "verde" then alert "Hizo click sobre el circulo verde"
-		
-	evento: ->
-		alert "Hizo click sobre un circulo"
+function replace(search,replace): reemplaza la primera aparicion de search en textarea con el valor de replace.
 
+function replaceAll(): reemplaza todas las apariciones que se encuentre en el textarea  seg√∫n los par√°metros dados en el modal de replace.
+
+function newfile(): crea un nuevo archivo en el editor
+
+function openfile():  abre un archivo para desplegar en el visualizador
+
+function saveAsfile(): guarda el archivo con el nombre especificado por el usuario.
+
+function savefile(): guarda  las modificaciones hechas en el archivo actual.
+
+function exit(): finaliza y cierra la aplicaci√≥n.
+
+Funciones del despliegue del flowchart en el panel de view
+
+function update(): actualiza el visualizador de la aplicaci√≥n.
+
+function draw(): dibuja en el visualizador basado en lo que hay en el editor.
+
+function drawStartNode(label,color,sizeX,sizeY,w,h): dibuja un nodo Start con los valores de label,color,sizeX,sizeY,w y h.
+
+function drawEndNode(label,color,sizeX,sizeY,w,h):dibuja un nodo End con los valores de label,color,sizeX,sizeY,w y h.
+
+function drawBlockNode(label,color,sizeX,sizeY,w,h):dibuja un nodo Block con los valores de label,color,sizeX,sizeY,w y h.
+
+function drawDecisionNode(label,color,sizeX,sizeY,w,h): dibuja un nodo Decision con los valores de label,color,sizeX,sizeY,w y h.
+
+function drawLinkNode(source,destiny,label,color,array):dibuja un nodo Link con los valores de source,destiny,label,color,array. Con esto se enlaza a dos nodos de cualquier otro tipo.
+
+function searchShape(name,array): ubica una figura en el array formado por todas las figuras del visualizador para aplicarle operaciones.
+
+Funciones de la barra de herramientas
+
+function drawBegin():  agrega el tag <flowchart> al editor .
+
+function drawFinish():agrega la secuencia de tags que representan un nodo Finish.
+
+function drawStart(): agrega la secuencia de tags que representan un nodo Start.
+
+function drawBlock(): agrega la secuencia de tags que representan un nodo Block. 
+
+function drawDecision(): agrega la secuencia de tags que representan un nodo Decision.
+
+function drawEnd(): agrega la secuencia de tags que representan un nodo End.
+
+function drawLink(source,destiny): agrega la secuencia de tags que representan un nodo Link.
+
+function edit(editId,editLabel,editColor,editX,editY,eleini,elefin): funci√≥n que se encarga de editar nodos del tipo Start, End, Block y Decision.
+
+function deletee(editId,eleini,elefin):funci√≥n que se encarga de eliminar nodos del tipo Start, End, Block y Decision.
+
+function deleteeLink(editId,eleini,elefin): funci√≥n que se encarga de eliminar nodos del tipo Link.
+
+function editLink(editId,editLabel,editSource,editDestiny,editColor,eleini,elefin):funci√≥n que se encarga de editar nodos del tipo Link.
+
+function add(addLabel,addColor,addX,addY,type): funci√≥n que se encarga de agregar nodos del tipo Start, End, Block y Decision.
+
+function addLink(addLabel,addSource,addDestiny,addColor): funci√≥n que se encarga de agregar nodos del tipo Link
+
+function editSelect(editId,editLabel,editColor,editX,editY): funcion que filtra que tipo de nodo va a ser editado de acuerdo con el id.
+
+function addSelect(addLabel,addColor,addX,addY):funcion que filtra que tipo de nodo va a ser agregado de acuerdo con el tipo seleccionado por el usuario.
+
+function deleteSelect(deleteId):funcion que filtra que tipo de nodo va a ser eliminado de acuerdo con el id.
 
 ----------
 
-##Forma de compilaciÛn, ejecuciÛn y utilizaciÛn de la aplicaciÛn
+##Forma de compilaci√≥n, ejecuci√≥n y utilizaci√≥n de la aplicaci√≥n
 
-Para hacer uso del editor de diagramas de flujo es necesario tener instalada la aplicaciÛn Mozilla XUL. Antes de compilar el programa es conveniente crear los archivos y directorios que utiliza XUL para poder ejecutar la aplicaciÛn correctamente.
+Para hacer uso del editor de diagramas de flujo es necesario tener instalada la aplicaci√≥n Adobe Air y tener descargadas las librerias del Framework Bootstrap de Twitter, Jointjs y JQuery que se demostrar√°n en la jerarqu√≠a de archivos. Antes de compilar el programa es conveniente crear los archivos y directorios que utiliza la aplicaci√≥n para poder ejecutarla correctamente.
 
-Primero se crea la jerarquÌa de archivos, a partir de los archivos que han sido proporcionados en el repositorio de github, de la siguiente manera:
+Primero se crea la jerarqu√≠a de archivos, a partir de los archivos que han sido proporcionados en el repositorio de github, de la siguiente manera:
 
-    Proyecto1
-      + chrome
-         + content
-             * program.xul
-         * chrome.manifest
-      + defaults
-         + preferences
-             * prefs.js
-      + application.ini
+    Flowchart Editor
+      + source
+         + bootstrap
+             + cerulean
+             + css
+             + img
+             + js
+         + icons
+             * Arrow.png
+             * begin.png
+             * block.png
+             * end.png
+             * finish.png
+             * rombo.png
+             * start.png
+         + js
+             * AIRAliases.js
+             * FlowchartFunctions.js
+             * joint.all.min.js
+             * jquery-1.8.2.js
+         * application.xml
+         * Flowchart.html
 
-Para la compilaciÛn del programa es necesario tomar el archivo de extensiÛn .coffee donde se tiene escrita la lÛgica de la aplicaciÛn. Para generar el archivo en extensiÛn .js es necesario llamar al compilador de coffeescript desde la lÌnea de comandos. Se debe abrir la terminal de comandos de Windows y tener disponible el compilador de coffeescript llamado coffee.exe en el directorio donde se escribir· la siguiente lÌnea: 
+Para la compilaci√≥n del programa es necesario tomar el archivo de extensi√≥n .coffee donde se tiene escrita la l√≥gica de la aplicaci√≥n. Para generar el archivo en extensi√≥n .js es necesario llamar al compilador de coffeescript desde la l√≠nea de comandos. Se debe abrir la terminal de comandos de Windows y tener disponible el compilador de coffeescript llamado coffee.exe en el directorio donde se escribir√° la siguiente l√≠nea: 
 
-<pre><code>
-coffee -c main.coffee
-</code></pre>
 
-Con esto se crear· un archivo equivalente al anterior sÛlo que con extensiÛn .js, lo cual es necesario para ejecutar la aplicaciÛn. El compilador de coffeescript, las librerÌas y el programa con extensiÛn .js deben residir en el mismo directorio en donde se encuentra la carpeta: "D:\Proyecto1\chrome\content\î con el fin de que la aplicaciÛn pueda compilarse correctamente y proceder a su ejecuciÛn.
-
-Para la ejecuciÛn del programa se debe abrir la terminal de comandos de Windows y escribir la siguiente lÌnea (se asume que el proyecto reside en el disco D y que Mozilla XULRunner se encuentra instalado en el directorio indicado):
-
-<pre><code>
-"C:\Program Files (x86)\Mozilla XULRunner\xulrunner.exe" "D:\Proyecto1\application.ini" -jsconsole
-</code></pre>
-
-En caso de que la lÌnea anterior no trabaje puede variarse de la siguiente manera:
-
-<pre><code>
-"C:\Program Files\Mozilla XULRunner\xulrunner.exe" "D:\Proyecto1\application.ini" -jsconsole
-</code></pre>
- 
-Si no se desea desplegar la consola de javascript simplemente se elimina el -jsconsole de la lÌnea. En caso de que no se cuente con Mozilla XUL para ejecutar la aplicaciÛn, Èsta tambiÈn puede ejecutarse directamente usando Firefox de la siguiente manera:
+Para la ejecuci√≥n del programa se debe abrir la terminal de comandos de Windows y escribir la siguiente l√≠nea (se asume que el proyecto reside en el disco C y que el application.xml est√° ubicado en el directorio actual):
 
 <pre><code>
-"C:\Program Files\Mozilla Firefox\firefox.exe" -app "D:\Proyecto1\application.ini"
+C:\AdobeAirSDK\bin\adl application.xml
 </code></pre>
 
-O bien:
+La compilaci√≥n y empaque de la aplicaci√≥n se puede realizar de la siguiente manera (desde un directorio Flowchart Editor):
 
 <pre><code>
-"C:\Program Files (x86)\Mozilla Firefox\firefox.exe" -app "D:\Proyecto1\application.ini"
+C:\AdobeAirSDK\bin\adt ‚Äìcertificate -cn SelfSigned 1024-RSA certificado.pfx MiClaveSecreta
 </code></pre>
 
-De esta forma el editor est· listo para utilizarse. Las opciones disponibles a utilizar son las del men˙, situado en la parte superior de la aplicaciÛn, desde la opciÛn File donde se encuentran las opciones Open, Save y Exit. Save est· presente pero no est· implementada para la presente etapa. La opciÛn de Exit sirve para cerrar la aplicaciÛn en caso de que ya no se desee trabajar en el editor. La opciÛn de Open se encarga de abrir una nueva ventana donde el usuario pueda recorrer los directorios que desee y seleccionar un diagrama de flujo en formato XML, el cual el editor leer· y a partir de esto lo desplegar· en la ventana de trabajo situada en la parte derecha del editor.
+Y finalmente se debe agregar lo siguiente en una sola l√≠nea incluyendo el punto final:
+
+<pre><code>
+C:\AdobeAirSDK\bin\adt -package -storetype pkcs12 
+    -keystore ..\certificado.pfx ..\TinyHMLEditor.air application.xml .
+</code></pre>
+
+De esta forma el editor est√° listo para utilizarse. Las opciones disponibles a utilizar son las del men√∫, situado en la parte superior de la aplicaci√≥n, desde la opci√≥n File donde se encuentran todas las opciones a utilizar Open, Open Recent, Save As, Save, New y Exit. Save y Save As guardan el contenido del panel izquierdo en un archivo XML. La opci√≥n de Exit sirve para cerrar la aplicaci√≥n en caso de que ya no se desee trabajar en el editor. La opci√≥n de Open se encarga de abrir una nueva ventana donde el usuario pueda recorrer los directorios que desee y seleccionar un diagrama de flujo en formato XML, el cual el editor leer√° y a partir de esto lo desplegar√° en la ventana de trabajo situada en la parte derecha del editor.
+
+El men√∫ tambi√©n incluye las funciones de edici√≥n del diagrama de flujo actual. Tales opciones son: Edit (Edit Node y Edit Link), Add (Add Node y Add Link), Delete (Delete Node y Delete Link) y Replace. Asi mismo, se presenta una barra de herramientas debajo del men√∫ con siete distinos botones los cuales facilitar√°n el dise√±o de los diagramas de flujo del usuario. tales botones agregan nuevos elementos al diagrama y estos son: Begin, Start, Block, End, Decision, Link y Finish.
 
 ----------
 
 ##Ejemplos de datos a utilizar como pruebas
 
-Los ejemplos de datos a utilizar como pruebas son diagramas de flujo en archivos con formato XML. Este formato nos permite crear un diagrama de flujo y guardarlo correctamente para su carga en nuevas ediciones. Es un formato ˙til para definir las caracterÌsticas que contendr· cada diagrama de flujo de modo que el programa pueda definir un estilo capaz de leer correctamente cada diagrama de flujo tomado como archivo de entrada.
+Los ejemplos de datos a utilizar como pruebas son diagramas de flujo en archivos con formato XML. Este formato nos permite crear un diagrama de flujo y guardarlo correctamente para su carga en nuevas ediciones. Es un formato √∫til para definir las caracter√≠sticas que contendr√° cada diagrama de flujo de modo que el programa pueda definir un estilo capaz de leer correctamente cada diagrama de flujo tomado como archivo de entrada.
 
-Para la carga de archivos se manejar· uno de dos formatos, el cual a˙n no se encuentra definido. Esto se decidir· para la siguiente implementaciÛn del editor pero se presentar· un ejemplo de cada formato a continuaciÛn.
- 
-El primer ejemplo de un archivo en formato XML que representa un diagrama de flujo es el siguiente:
+Para la carga de archivos se manejar√° un formato espec√≠fico el cual se mostrar√° a continuaci√≥n a modo de ejemplo. El primer ejemplo de un archivo en formato XML que representa un diagrama de flujo es el siguiente:
 
 ```
 <code>
 <flowchart>
-    <block id="b1" cap-pos="inside" type="rhombus_small_lightgreen" caption="x>0" left="221" top="124" width="46" height="46" lock="false" zindex="1001">
-        <connection ref="b4" output="1" input="2" label="true" type="none-arrow"></connection>
-        <connection ref="b3" output="3" input="2" label="false" type="none-arrow"></connection>
-    </block>
-    <block caption="start" cap-pos="inside" type="circle_small_lightgreen" id="b2" width="45" height="45" lock="false" left="308" top="27" zindex="1001">
-        <connection ref="b1" output="4" input="2" type="none-arrow"></connection>
-    </block>
-    <block caption="End" cap-pos="inside" type="circle_small_lightgreen" id="b3" width="45" height="45" lock="false" left="355" top="330" zindex="1001"></block>
-    <block caption="z>5" cap-pos="inside" type="rhombus_small_lightgreen" id="b4" width="46" height="46" lock="false" left="136" top="250" zindex="1001">
-        <connection ref="b3" output="3" input="1" label="false" type="none-arrow"></connection>
-        <connection ref="b7" output="1" input="2" label="true" type="none-arrow"></connection>
-    </block>
-    <block caption="i++" cap-pos="inside" type="rect_small_lightgreen" id="b7" width="46" height="46" lock="false" left="69" top="354" zindex="1001">
-        <connection ref="b3" output="4" input="4" type="none-arrow"></connection>
-    </block>
+<start>
+			<id>s01</id>
+			<label>Lamp doesn't work</label>
+			<color>pink</color>
+			<x>200</x>
+			<y>5</y>
+			<width>140</width>
+			<height>60</height>
+</start>
+<decision>
+			<id>d01</id>
+			<label>Lamp plugged in?</label>
+			<color>yellow</color>			
+			<x>230</x>
+			<y>110</y>
+			<width>70</width>
+			<height>70</height>
+</decision>
+		<end>
+			<id>e01</id>
+			<label>Plug in lamp</label>
+			<color>lightgreen</color>			
+			<x>400</x>
+			<y>110</y>
+			<width>140</width>
+			<height>60</height>
+                        </end>
+		<decision>
+			<id>d02</id>
+			<label>Bulb burned out?</label>
+			<color>yellow</color>			
+			<x>230</x>
+			<y>255</y>
+			<width>70</width>
+			<height>70</height>
+                        </decision>
+		<end>
+			<id>e02</id>
+			<label>Replace bulb</label>
+			<color>lightgreen</color>			
+			<x>400</x>
+			<y>255</y>
+			<width>140</width>
+			<height>60</height>
+                        </end>
+<end>
+			<id>e03</id>
+			<label>Repair lamp</label>
+			<color>lightgreen</color>			
+			<x>200</x>
+			<y>390</y>
+			<width>140</width>
+			<height>60</height>
+</end>
+		<link>
+			<id>l1</id>
+			<source>s01</source>
+			<destiny>d01</destiny>
+			<color>magenta</color>
+		</link>
+		<link>
+			<id>l2</id>
+			<source>d01</source>
+			<destiny>d02</destiny>
+			<label>Yes</label>
+			<color>red</color>
+		</link>
+		<link>
+			<id>l3</id>
+			<source>d01</source>
+			<destiny>e01</destiny>
+			<label>No</label>
+			<color>steelblue</color>
+		</link>
+		<link>
+			<id>l4</id>
+			<source>d02</source>
+			<destiny>e02</destiny>
+			<label>Yes</label>
+			<color>gold</color>
+		</link>
+		<link>
+			<id>l5</id>
+			<source>d02</source>
+			<destiny>e03</destiny>
+			<label>No</label>
+			<color>darkcyan</color>
+		</link>				
 </flowchart>
 </code>
 ```
 
-El segundo ejemplo con formato distinto en XML es el siguiente: 
+El diagrama de flujo que se desea crear es el siguiente:
+
+![Alt text](http://upload.wikimedia.org/wikipedia/commons/thumb/9/91/LampFlowchart.svg/220px-LampFlowchart.svg.png)
+
+Un segundo ejemplo que puede realizarse perfectamente en la aplicaci√≥n es el siguiente:
+
+![Alt text](http://3.bp.blogspot.com/_JmIzs1RspX0/TDFbgDZnRnI/AAAAAAAAAFs/pB57qilCSdg/s1600/DIAGRAMA+DE+FLUJO2.jpg)
+
+Un tercer ejemplo de un algoritmo que desea saber si un numero entero es par o impar puede describirse con el siguiente archivo XML de prueba:
 
 ```
 <code>
-<mxGraphModel dx="800" dy="800" grid="1" guides="1" tooltips="1" connect="1" fold="1" page="1" pageScale="1" pageWidth="826" pageHeight="1169" style="default-style2">
-	<root>
-		<mxCell id="0"/>
-		<mxCell id="1" parent="0"/>
-		<mxCell id="2" value="inicio" style="ellipse" vertex="1" parent="1">
-			<mxGeometry x="180" y="80" width="80" height="80" as="geometry"/>
-		</mxCell>
-		<mxCell id="3" value="codigo1" style="rounded=1" vertex="1" parent="1">
-			<mxGeometry x="400" y="100" width="120" height="60" as="geometry"/>
-		</mxCell>
-		<mxCell id="5" value="" style="endArrow=none;exitX=1;exitY=0.5;entryX=0;entryY=0.75" edge="1" parent="1" source="2" target="3">
-			<mxGeometry as="geometry"/>
-		</mxCell>
-		<mxCell id="7" value="condicion" style="rhombus" vertex="1" parent="1">
-			<mxGeometry x="420" y="210" width="80" height="80" as="geometry"/>
-		</mxCell>
-		<mxCell id="10" value="" style="endArrow=none;exitX=0.5;exitY=0;entryX=0.5;entryY=1" edge="1" parent="1" source="7" target="3">
-			<mxGeometry as="geometry"/>
-		</mxCell>
-		<mxCell id="11" value="codigo2" vertex="1" parent="1">
-			<mxGeometry x="400" y="340" width="120" height="60" as="geometry"/>
-		</mxCell>
-		<mxCell id="14" value="" style="endArrow=none;exitX=0.5;exitY=1;entryX=0.5;entryY=0" edge="1" parent="1" source="7" target="11">
-			<mxGeometry as="geometry"/>
-		</mxCell>
-		<mxCell id="15" value="fin" style="ellipse;shape=doubleEllipse" vertex="1" parent="1">
-			<mxGeometry x="420" y="450" width="80" height="80" as="geometry"/>
-		</mxCell>
-		<mxCell id="16" value="" style="endArrow=none;exitX=0.5;exitY=1;entryX=0.5;entryY=0" edge="1" parent="1" source="11" target="15">
-			<mxGeometry as="geometry"/>
-		</mxCell>
-	</root>
-</mxGraphModel>
+<flowchart>
+<start>
+			<id>s01</id>
+			<label>int x = number</label>
+			<color>lightgreen</color>
+			<x>200</x>
+			<y>5</y>
+			<width>140</width>
+			<height>60</height>
+</start>
+<block>
+			<id>b01</id>
+			<label>int y = x%2</label>
+			<color>pink</color>
+			<x>200</x>
+			<y>110</y>
+			<width>140</width>
+			<height>60</height>
+</block>
+<decision>
+			<id>d01</id>
+			<label>if(y==0)</label>
+			<color>white</color>			
+			<x>230</x>
+			<y>230</y>
+			<width>70</width>
+			<height>70</height>
+</decision>
+		<end>
+			<id>e01</id>
+			<label>return "Even"</label>
+			<color>lightblue</color>			
+			<x>400</x>
+			<y>230</y>
+			<width>140</width>
+			<height>60</height>
+		</end>
+		<end>
+			<id>e02</id>
+			<label>return "Odd"</label>
+			<color>lightblue</color>			
+			<x>200</x>
+			<y>390</y>
+			<width>140</width>
+			<height>60</height>
+		</end>
+		<link>
+			<id>l1</id>
+			<source>s01</source>
+			<destiny>b01</destiny>
+			<color>red</color>
+		</link>
+		<link>
+			<id>l2</id>
+			<source>b01</source>
+			<destiny>d01</destiny>
+			<color>red</color>
+		</link>
+		<link>
+			<id>l3</id>
+			<source>d01</source>
+			<destiny>e01</destiny>
+			<label>true</label>
+			<color>red</color>
+		</link>
+		<link>
+			<id>l4</id>
+			<source>d01</source>
+			<destiny>e02</destiny>
+			<label>false</label>
+			<color>red</color>
+		</link>
+</flowchart>
 </code>
 ```
 
-Un ejemplo al que se quisiera llegar es el siguiente:
+El resultado ser√≠a algo similar al siguiente diagrama:
 
-![Alt text](http://3.bp.blogspot.com/_JmIzs1RspX0/TDFbgDZnRnI/AAAAAAAAAFs/pB57qilCSdg/s1600/DIAGRAMA+DE+FLUJO2.jpg)
+![Alt text](http://physics.nyu.edu/pine/pymanual/_images/flow_if_else.jpg)
 
 ----------
 
 ##Limitaciones observadas y posibles mejoras (lista TO DO)
 
-Las limitaciones encontradas para esta primer etapa del proyecto fueron bastantes, pues el ambiente Mozilla XUL no resultÛ muy cooperativo para los objetivos que se debÌan cumplir para implementar el primer mÛdulo del editor de diagramas de flujo en cuestiÛn. A continuaciÛn se presentan las limitaciones observadas y posibles mejoras:
+Las limitaciones encontradas para esta segunda etapa del proyecto fueron pocas con respecto a la primer etapa, pues el ambiente h√≠brido de Bootstrap, Adobe Air y Javascript no result√≥ muy d√≠ficil pero si se tuvieron ciertos problemas al tratar de implementar el empaquetamiento o la ejecuci√≥n de la aplicaci√≥n en Adobe Air. A continuaci√≥n se presentan las limitaciones observadas y posibles mejoras:
 
-* Mozilla XUL no permite utilizar una gran cantidad de librerÌas en javascript, ya que genera errores constantemente en librerÌas que funcionan perfectamente en HTML.
-* El uso de Mozilla XUL se restringe ˙nicamente a crear aplicaciones muy sencillas, ya que no se nos permitiÛ implementar una librerÌa en javascript que nos facilitar· la creaciÛn del editor y visualizador de diagramas de flujo.
-* A partir de constantes pruebas se determina que sÛlo pueden crearse figuras en el marco de trabajo del editor de forma est·tica, ya que implementar eventos sobre las figuras no fue exitoso.
-* La lectura de archivos no fue implementada como se propuso, pues no se pudo hacer el mapeo de los archivos de prueba en formato XML sobre las figuras pertinentes en el marco de trabajo, debido a los constantes problemas que generaba Mozilla XUL.
-* Para las prÛximas implementaciones del editor de diagramas de flujo se utilizar· una nueva herramienta o tecnologÌa, la cual a˙n no ha sido seleccionada, para su correspondiente desarrollo, esto porque Mozilla XUL resultÛ ser m·s restrictiva de lo que se  esperaba.
-* Para las nuevas etapas del editor, se agregar·n nuevas funcionalidades y caracterÌsticas, de modo que sea posible realizar todas las acciones necesarias de carga, visualizaciÛn y ediciÛn de diagramas de flujo para aprovechar esta herramienta al m·ximo. Asimismo, la interfaz se har· m·s sofisticada para cumplir con estos objetivos.
-* Se espera contar con una nueva herramienta m·s amigable con las librerÌas de javascript encontradas, para poder finalizar el primer mÛdulo del editor y proseguir con las siguientes etapas de desarrollo m·s f·cilmente.
+* Adobe Air no permite utilizar la librer√≠a Jointjs pues al tratar de dibujar las figuras en el ambiente, este tira errores de tipo los cuales vienen indicados expl√≠citamente en la libreria de joint.all.min.js, por lo que su implementaci√≥n en Adobe Air no fue exitosa.
+* El uso de Adobe Air para la carga y manejo de archivos fue exitoso pues todos los archivos pueden cargarse y guardarse correctamente.
+* A partir de constantes pruebas se determina que los diagramas de flujo pueden realizarse sin problemas, pues la implementaci√≥n de los diagramas a partir de los archivos XML de prueba fue exitosa, pero esto es solo factible en HTML pues en Adobe Air se generan errores al utilzar la librer√≠a de Jointjs.
+* La funcionalidad de cargar archivos recientes no pudo realizarse, puesto que no se pudieron crear items dinamicos que representaran archivos para la opci√≥n de dropdown ‚ÄúFile/Open Recent‚Äù de la aplicaci√≥n, esto porque el manejo de los dropdowns por Bootstrap es distinto al HTML puro, por lo que esta funcionalidad no fue exitosa.
+* Para la √∫ltima etapa del editor, se agregar√°n funcionalidades y caracter√≠sticas relacionadas con el estilo y manejo de temas de la aplicaci√≥n, con el fin de proporcionar un ambiente sofisticado al usuario.
+* Se esperan resolver los problemas de librer√≠as con Adobe Air pues la librer√≠a clave para la realizaci√≥n del proyecto es Jointjs.
 
 ----------
