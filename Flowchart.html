@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Flowchart Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="bootstrap/cerulean/bootstrap.css" rel="stylesheet">
+  <style type="text/css">
+      body {
+        padding-top: 120px; 
+				padding-bottom:0px;
+      }
+      #view {
+        height: 500px;
+        overflow: scroll;
+    } 
+    </style>
+  <script src="js/AIRAliases.js" type="text/javascript"></script>
+  <script src="js/FlowchartFunctions.js" type="text/javascript"></script>
+  <script src="js/jquery-1.8.2.js" type="text/javascript"></script>
+	<script src="js/joint.all.min.js" type="text/javascript" ></script>
+  <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <ul class="nav" role="navigation">
+      <li class="dropdown">
+        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> File</a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
+            <li><a tabindex="-1" href="#" onClick="newfile();">
+              <i class="icon-file"></i> New</a></li>
+            <li class="divider"></li>
+            <li><a tabindex="-1" href="#" onClick="openfile();">
+              <i class="icon-folder-open"></i> Open</a></li>
+						<li class="dropdown-submenu">
+							<a tabindex="-1" href="#myRecentFiles" data-toggle="modal">
+							<i class="icon-folder-open"></i> Open Recent</a>
+						<!--	<ul id="ddlRecent" class="dropdown-menu">
+							<li></li>
+							</ul> -->
+						</li>            
+						<li><a tabindex="-1" href="#" onClick="savefile();">
+              <i class="icon-download-alt"></i> Save</a></li>
+            <li><a tabindex="-1" href="#" onClick="saveAsfile();">
+              <i class="icon-download-alt"></i> Save As</a></li>
+            <li class="divider"></li>						
+            <li><a tabindex="-1" href="#" onClick="exit();">
+              <i class="icon-remove"></i> Exit</a></li>
+        </ul>
+       </li>
+				<li class="dropdown">
+				<a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> Edit</a>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Edit Block</a>
+					</li>
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Edit Decision</a>
+					</li>
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Edit End</a>
+					</li>
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Edit Link</a>
+					</li>						
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Edit Start</a>
+					</li>				
+				</ul>
+			</li>
+			<li class="dropdown">
+				<a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> Add</a>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Add Block</a>
+					</li>
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Add Decision</a>
+					</li>
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Add End</a>
+					</li>
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Add Link</a>
+					</li>						
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Add Start</a>
+					</li>				
+				</ul>
+			</li>
+			<li class="dropdown">
+				<a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> Delete</a>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Delete Block</a>
+					</li>
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Delete Decision</a>
+					</li>
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Delete End</a>
+					</li>
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Delete Link</a>
+					</li>						
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Delete Start</a>
+					</li>				
+				</ul>
+			</li>
+			<li class="dropdown">
+				<a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> Replace</a>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+						<i class="icon-tasks"></i> Replace</a>
+					</li>
+				</ul>
+			</li>
+			<li id="ddlRecent" class="dropdown">
+				<a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> Recent Files</a>
+				<ul id="ddlRecentFiles" class="dropdown-menu" role="menu" aria-labelledby="drop2">
+				</ul>
+			</li>
+    </ul>
+  </div>
+	<div class="navbar-inner">
+    <ul class="nav">
+			<li>&nbsp &nbsp &nbsp &nbsp &nbsp</li>
+			<li><a href="#" rel="tooltip" title="Represents the beginning of the xml file" onclick="drawBegin();"><img width="30" height="30" src="icons/begin.png"> Begin</a></li>
+			<li><a href="#" rel="tooltip" title="Represents the start process" onclick="drawStart();"><img width="30" height="30" src="icons/start.png"> Start</a></li>
+			<li><a href="#" rel="tooltip" title="Represents a process" onclick="drawBlock();"><img width="30" height="30" src="icons/block.png"> Block</a></li>	
+			<li><a href="#" rel="tooltip" title="Represents the end process" onclick="drawEnd();"><img width="30" height="30" src="icons/end.png"> End</a></li>
+			<li><a href="#" rel="tooltip" title="Represents a decision" onclick="drawDecision();"><img width="30" height="30" src="icons/rombo.png"> Decision</a></li>
+			<li><a href="#" rel="tooltip" title="Represents conexion between two elements" onclick="drawLink();"><img width="30" height="30" src="icons/Arrow.png"> Link</a></li>
+			<li><a href="#" rel="tooltip" title="Represents the end of the xml file" onclick="drawFinish();"><img width="30" height="30" src="icons/finish.png"> Finish</a></li>
+    </ul>
+	</div>
+</div>
+
+<div id="myRecentFiles" class="modal hide" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" 
+            aria-hidden="true">×</button>
+    <h3>Recent Files</h3>
+  </div>
+  <div class="modal-body">
+      <textarea id="list-text" rows="3"></textarea>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="addList();">OK</a>
+  </div>
+</div>
+
+<div id="myModal" class="modal hide" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" 
+            aria-hidden="true">X</button>
+    <h3>Replace one or all matches</h3>
+  </div>
+  <div class="modal-body">
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Search: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="search-text" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Replace With: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="replace-text" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+  </div>
+  <div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal" onclick="close();">Cancel</a>
+		<a href="#" class="btn btn-primary" data-dismiss="modal" onclick="replaceOne();">Replace</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="replaceAll();">Replace All</a>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span6">
+      <textarea id="textarea" rows="24" class="span12"></textarea>
+    </div>
+    <div id="view" class="span6 well"></div>
+  </div>
+</div>
+</body>
+</html>
