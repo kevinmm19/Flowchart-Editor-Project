@@ -36,10 +36,10 @@
 						<li class="dropdown-submenu">
 							<a tabindex="-1" href="#myRecentFiles" data-toggle="modal">
 							<i class="icon-folder-open"></i> Open Recent</a>
-						<!--	<ul id="ddlRecent" class="dropdown-menu">
+						</li> 
+						<ul id="ddlRecent" class="dropdown-menu">
 							<li></li>
-							</ul> -->
-						</li>            
+						</ul>
 						<li><a tabindex="-1" href="#" onClick="savefile();">
               <i class="icon-download-alt"></i> Save</a></li>
             <li><a tabindex="-1" href="#" onClick="saveAsfile();">
@@ -49,64 +49,37 @@
               <i class="icon-remove"></i> Exit</a></li>
         </ul>
        </li>
-				<li class="dropdown">
+			<li class="dropdown" id="dropdownEdit">
 				<a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> Edit</a>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Edit Block</a>
+					<li><a tabindex="-1" href="#EditNode" data-toggle="modal">
+						<i class="icon-tasks"></i> Edit Node</a>
 					</li>
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Edit Decision</a>
-					</li>
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Edit End</a>
-					</li>
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+					<li><a tabindex="-1" href="#EditLink" data-toggle="modal">
 						<i class="icon-tasks"></i> Edit Link</a>
-					</li>						
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Edit Start</a>
-					</li>				
+					</li>										
 				</ul>
 			</li>
 			<li class="dropdown">
 				<a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> Add</a>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Add Block</a>
+					<li><a tabindex="-1" href="#AddNode" data-toggle="modal">
+						<i class="icon-tasks"></i> Add Node</a>
 					</li>
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Add Decision</a>
-					</li>
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Add End</a>
-					</li>
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+					<li><a tabindex="-1" href="#AddLink" data-toggle="modal">
 						<i class="icon-tasks"></i> Add Link</a>
-					</li>						
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Add Start</a>
 					</li>				
 				</ul>
 			</li>
 			<li class="dropdown">
 				<a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> Delete</a>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Delete Block</a>
+					<li><a tabindex="-1" href="#DeleteNode" data-toggle="modal">
+						<i class="icon-tasks"></i> Delete Node</a>
 					</li>
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Delete Decision</a>
-					</li>
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Delete End</a>
-					</li>
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
+					<li><a tabindex="-1" href="#DeleteLink" data-toggle="modal">
 						<i class="icon-tasks"></i> Delete Link</a>
-					</li>						
-					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
-						<i class="icon-tasks"></i> Delete Start</a>
-					</li>				
+					</li>			
 				</ul>
 			</li>
 			<li class="dropdown">
@@ -115,11 +88,6 @@
 					<li><a tabindex="-1" href="#myModal" data-toggle="modal">
 						<i class="icon-tasks"></i> Replace</a>
 					</li>
-				</ul>
-			</li>
-			<li id="ddlRecent" class="dropdown">
-				<a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> Recent Files</a>
-				<ul id="ddlRecentFiles" class="dropdown-menu" role="menu" aria-labelledby="drop2">
 				</ul>
 			</li>
     </ul>
@@ -142,7 +110,7 @@
      aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" 
-            aria-hidden="true">×</button>
+            aria-hidden="true">X</button>
     <h3>Recent Files</h3>
   </div>
   <div class="modal-body">
@@ -184,6 +152,278 @@
     <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="replaceAll();">Replace All</a>
   </div>
 </div>
+
+<!---AddNode--->
+<div id="AddNode" class="modal hide" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" 
+            aria-hidden="true">X</button>
+    <h3>Add Node</h3>
+  </div>
+  <div class="modal-body">
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Type: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<select id="list-type">
+					<option id="idblock" value="block">Block</option>
+					<option id="iddecision"  value="decision">Decision</option>
+					<option id="idend" value="end">End</option>
+					<option id="idstart" value="start">Start</option>
+				</select> 
+			</div>
+		</div><!--/span--> 
+	<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Label: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="labelAddNode" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Color: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="colorAddNode" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>x: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="xAddNode" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>y: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="yAddNode" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="addSelect('labelAddNode','colorAddNode','xAddNode','yAddNode');">OK</a>
+  </div>
+</div>
+
+<!--EditNode--->
+<div id="EditNode" class="modal hide" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" 
+            aria-hidden="true">X</button>
+    <h3>Edit Node</h3>
+  </div>
+  <div class="modal-body">
+  <div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Id: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="idEditNode" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Label: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="labelEditNode" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Color: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="colorEditNode" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>x: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="xEditNode" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>y: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="yEditNode" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+  </div>
+  <div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal" onclick="close();">Cancel</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="editSelect('idEditNode','labelEditNode','colorEditNode','xEditNode','yEditNode');">Save</a>	
+  </div>
+</div>
+
+<!--EditLink--->
+<div id="EditLink" class="modal hide" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" 
+            aria-hidden="true">X</button>
+    <h3>Edit Link</h3>
+  </div>
+  <div class="modal-body">
+  <div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Id: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="idEditLink" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Label: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="labelEditLink" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Source: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="sourceEditLink" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Destiny: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="destinyEditLink" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Color: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="colorEditLink" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+  </div>
+  <div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal" onclick="close();">Cancel</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="editLink('idEditLink','labelEditLink','sourceEditLink','destinyEditLink','colorEditLink','<link>','</link>');">Save</a>
+  </div>
+</div>
+<!---EndLinkNode--->
+
+<!-----DeleteNode--->
+<div id="DeleteNode" class="modal hide" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" 
+            aria-hidden="true">X</button>
+    <h3>Delete Node</h3>
+  </div>
+  <div class="modal-body">
+  <div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Id: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="idDeleteNode" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+  </div>
+  <div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal" onclick="close();">Cancel</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="deleteSelect('idDeleteNode');">Save</a>
+  </div>
+</div>
+<!-----EndDeleteNode--->
+
+<!-----DeleteLink--->
+<div id="DeleteLink" class="modal hide" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" 
+            aria-hidden="true">X</button>
+    <h3>Delete Link</h3>
+  </div>
+  <div class="modal-body">
+  <div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Id: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="idDeleteLink" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+  </div>
+  <div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal" onclick="close();">Cancel</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="deleteSelect('idDeleteLink');">Save</a>
+  </div>
+</div>
+<!-----EndDeleteLink--->
+
+<!-----AddLink--->
+<div id="AddLink" class="modal hide" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" 
+            aria-hidden="true">X</button>
+    <h3>Add Link</h3>
+  </div>
+  <div class="modal-body">
+  <div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Label: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="labelAddLink" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Source: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="sourceAddLink" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Destiny: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="destinyAddLink" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->
+		<div class="row-fluid">
+			<div class="span3" align="right">
+				<p>Color: </p>
+			</div><!--/span-->
+			<div class="span7" align="left">
+				<input class="input-large" id="colorAddLink" type="text" style="border:1px #00AACC solid;" />
+			</div><!--/span-->				
+		</div><!--/row-->	
+  </div>
+  <div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal" onclick="close();">Cancel</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="addLink('labelAddLink','sourceAddLink','destinyAddLink','colorAddLink');">Save</a>
+  </div>
+</div>
+<!---EndAddLink--->
 
 <div class="container-fluid">
   <div class="row-fluid">
